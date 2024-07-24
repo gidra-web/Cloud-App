@@ -1,4 +1,4 @@
-# Cloud App,
+# Cloud App
  aws, terraform(iaac), github actions (ci/cd) , reverse proxy, swagger, nginx, serverless, python
 
 # All utils used in project:
