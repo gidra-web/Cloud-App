@@ -1,0 +1,32 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: "eu-west-1"
+    AWS_ACCOUNT_ID: "992382501500"
+    IMAGE_REPO_NAME: "praksa-repo"
+    AWS_ACCESS_KEY_ID: "ASIA6ODU3IJ6HYORG2ME"
+    AWS_SECRET_ACCESS_KEY: "G+hY/o+sTHIkF7i4mlwdSaLt+6bwg06UC0Lk3zt/"
+    AWS_SESSION_TOKEN: "IQoJb3JpZ2luX2VjEHEaCWV1LXdlc3QtMSJIMEYCIQD2fqElKI6576Q4zDWV+/E5beBXpTlU8YAPCRE0J7wZMQIhAKXb3fF2H3mbMaqB+8yCr/arF3DrIw8kxi3tkfPoE9qvKpIDCLr//////////wEQABoMOTkyMzgyNTAxNTAwIgzqCn5QJAdzA5jeC2kq5gJMXPeOvv/yfOaQKOt3y39iXFSlpd1Rc9QhdvfJTnI28gNxv9htwxlyGmM1eMkbuzFAGRVgHvk1GOrsaPwoe3Z8TT+fhkTpRIcAEC07aAnXE+nuxn84gUu7X7DtkaE2hSos76vR6Nbdb2L4sWtHCMJkoWIAP0NWIV2mDDQ5C2whEKKLfA4dZkN96wGkxTknHvU6s3MW0kAvkFAeTw1bNFioVMc70WZbJK+T1ygH32FNWvB9QBQlYLFDzXfXrhqhOTmec9Iq8X+MTRu3jrAGaYyYfi4hxu0nJTwW0VzG5jEqgg3U/km7pWjE+tMOvYcBucV0AMT2UZrgLii1YgMO3R4Mr4lTqnGbsDKAGJvRMp+Qf0UKJUJsaLsgCkZ0h0ldBClFD/8Nf6ljnKC2lLoofkOQMUzuAlxTmUAoPDrdgfjS0qqtMLDS20gxvnbpX8w7h87qO+VXxi8sgOyy2GMcjZr64e4/02J7MNLPrbEGOqUBFvIW5szewc9hzE/DRQ5GtNh5MbIXCDd9KWxIUfoKQAzHrztguTjw1IlFpnTb2uPEEM47w2sVxjFf5B5TrkUnz3WuhfXi2vPtQ+OfE1ReJth8RSnp96bdRvgkZH7c1l/WZrBfdaaTpsPtJETbte2Qjo9PRNAUNv+G9kRERplJ76MNpaADxorh1imS09VWYTO3E88khAThGAkQtheCcA7GhypXWezy"
+
+phases:
+  pre_build:
+    commands:
+      - export AWS_ACCESS_KEY_ID
+      - export AWS_SECRET_ACCESS_KEY
+      - export AWS_SESSION_TOKEN
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...  
+      - aws ecr batch-delete-image --repository-name $IMAGE_REPO_NAME --image-ids imageTag=latest
+      - docker build --no-cache -t $IMAGE_REPO_NAME -f ./docker-nginx/Dockerfile .
+      - docker tag $IMAGE_REPO_NAME:latest $REPOSITORY_URI:latest   
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $REPOSITORY_URI:latest
