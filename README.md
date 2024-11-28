@@ -1,6 +1,8 @@
 # Cloud App
  aws, terraform(iaac), github actions (ci/cd) , reverse proxy, swagger, nginx, serverless, python
 
+![alt text](https://github.com/gidra-web/Cloud-App/blob/master/ArchitecturebyGidra.png?raw=true)
+
 # All utils used in project:
 ## Python
 ## GitHub Actions
@@ -10,5 +12,7 @@
 ## AWS (Serverless, FaaC, Fargate, APIs, Route53, CloudWatch, EventBridge and few more...
 ## Docker ( compose img )
 ## NGINX *_with implementing reverse proxy_*
+
+
 
 
